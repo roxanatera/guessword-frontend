@@ -17,16 +17,16 @@ export default function Home() {
   const [message, setMessage] = useState<string>("");
   const [gameOver, setGameOver] = useState<boolean>(false);
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;  // Usando la variable de entorno
+
   const guessLetter = async () => {
     if (letter.trim() === "") return;
-
-    const apiUrl = process.env.REACT_APP_API_URL;
 
     try {
       const response = await fetch(`${apiUrl}/guess`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ letter }), // Envía la letra al backend
+        body: JSON.stringify({ letter }),
       });
 
       if (!response.ok) throw new Error("Error al comunicarse con el servidor");
@@ -53,8 +53,6 @@ export default function Home() {
   };
 
   const restartGame = async () => {
-    const apiUrl = process.env.REACT_APP_API_URL;
-
     try {
       await fetch(`${apiUrl}/reset`, { method: "POST" });
       setProgress("_ _ _ _");
@@ -72,29 +70,18 @@ export default function Home() {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-gray-100 to-gray-300 text-gray-800">
       <div className="w-full max-w-md bg-white rounded-lg shadow-2xl p-8 text-center space-y-4">
         <h1 className="text-4xl font-extrabold text-gray-800">🎮 Juego del Ahorcado</h1>
-
-        {/* Progreso de la palabra */}
         <p className="text-3xl tracking-wide font-mono mt-2">
-          {progress ? progress.split("").join(" ") : "_ _ _ _"}
+          {progress.split("").join(" ")}
         </p>
-
-        {/* Letras usadas */}
         <p className="text-sm mt-4 text-gray-500">
-          Letras usadas:{" "}
-          <span className="font-bold text-gray-700">
+          Letras usadas: <span className="font-bold text-gray-700">
             {usedLetters.length > 0 ? usedLetters.join(", ") : "Ninguna"}
           </span>
         </p>
-
-        {/* Intentos restantes */}
         <p className="text-lg text-gray-600 mt-2">
-          Intentos restantes:{" "}
-          <span className="font-bold text-red-500">{attempts}</span>
+          Intentos restantes: <span className="font-bold text-red-500">{attempts}</span>
         </p>
-
         {message && <p className="text-xl font-semibold text-green-500 mt-2">{message}</p>}
-
-        {/* Input y botón */}
         {!gameOver && (
           <div className="flex items-center justify-center space-x-2 mt-6">
             <input
@@ -113,7 +100,6 @@ export default function Home() {
             </button>
           </div>
         )}
-
         {gameOver && (
           <button
             onClick={restartGame}
@@ -123,7 +109,6 @@ export default function Home() {
           </button>
         )}
       </div>
-
       <footer className="mt-8 text-gray-500">
         <p>Creado con ❤️ JR Natera</p>
       </footer>
